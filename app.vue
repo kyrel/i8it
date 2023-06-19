@@ -1,5 +1,6 @@
 <template>
   <div>
-    <NuxtPage /> 
+    <UserCard />
+    <NuxtPage />
   </div>
 </template>
