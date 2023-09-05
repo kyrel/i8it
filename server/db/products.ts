@@ -62,11 +62,11 @@ export class ProductRepository {
         FROM products
         WHERE 
         
-        unaccent(name) ILIKE '%' || $2 || '%'
+        unaccent(name) ILIKE '%' || $1 || '%'
         ORDER BY id DESC
         LIMIT 15
       `; //created_by_user_id = $1 AND
 
-    return this.db.many(queryText, [userId, pattern]);
+    return this.db.many(queryText, [/*userId, */ pattern]);
   }
 }
