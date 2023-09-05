@@ -1,5 +1,5 @@
 <template>
-  home
+  <h1>home</h1>
   <br />
   <NuxtLink to="/eaten">I have eaten...</NuxtLink>
   <br />
