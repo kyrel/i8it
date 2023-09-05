@@ -60,11 +60,12 @@ export class ProductRepository {
           serving_name as "servingName",
           serving_weight as "servingWeight"
         FROM products
-        WHERE created_by_user_id = $1
-        AND unaccent(name) ILIKE '%' || $2 || '%'
+        WHERE 
+        
+        unaccent(name) ILIKE '%' || $2 || '%'
         ORDER BY id DESC
         LIMIT 15
-      `;
+      `; //created_by_user_id = $1 AND
 
     return this.db.many(queryText, [userId, pattern]);
   }
