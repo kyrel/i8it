@@ -44,7 +44,7 @@
     </fieldset>
     <button type="submit">Add</button>
   </form>
-  <table v-if="dateForTotals">
+  <table v-if="diary">
     <caption>
       <button type="button" @click="prevDayForTotals">&lt;</button>
       Totals for
@@ -55,11 +55,25 @@
     </caption>
     <tbody>
       <tr>
+        <th colspan="2">Total</th>
         <th>KCal: {{ totals.calories.toFixed(1) }}</th>
         <th>Fats: {{ totals.fats.toFixed(1) }} g</th>
         <th>Carbs: {{ totals.carbs.toFixed(1) }} g</th>
         <th>Proteins: {{ totals.proteins.toFixed(1) }} g</th>
       </tr>
+      <template v-for="{ time, entries } in diaryByTime" :key="time">
+        <tr>
+          <th colspan="6">{{ time }}</th>
+        </tr>
+        <tr v-for="entry in entries">
+          <td>{{ entry.productName }}</td>
+          <td>{{ entry.weight.toFixed() }} g</td>
+          <td>KCal: {{ entry.calories.toFixed(1) }}</td>
+          <td>Fats: {{ entry.fats.toFixed(1) }} g</td>
+          <td>Carbs: {{ entry.carbs.toFixed(1) }} g</td>
+          <td>Proteins: {{ entry.proteins.toFixed(1) }} g</td>
+        </tr>
+      </template>
     </tbody>
   </table>
 </template>
@@ -84,9 +98,12 @@ const time = ref("");
 const productName = ref("");
 const productId = ref(undefined as undefined | number);
 const dateForTotals = ref("");
-const { totals, refresh: refreshDiaryForDay } = await useDiaryForDay(
-  dateForTotals
-);
+const {
+  diary,
+  diaryByTime,
+  totals,
+  refresh: refreshDiaryForDay,
+} = await useDiaryForDay(dateForTotals, false);
 
 onMounted(() => {
   dateForTotals.value = dayjs().format("YYYY-MM-DD");
@@ -152,7 +169,7 @@ function nextDayForTotals() {
 }
 </script>
 
-<style>
+<style scoped>
 .nutrition-fact {
   margin-right: 15px;
 }
@@ -160,5 +177,9 @@ function nextDayForTotals() {
 .nutrition-fact__input {
   margin-left: 10px;
   width: 60px;
+}
+th {
+  padding-top: 30px;
+  text-align: left;
 }
 </style>

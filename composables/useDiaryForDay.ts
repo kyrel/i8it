@@ -11,7 +11,10 @@ export type DiaryEntry = {
 
 export type DiaryTotals = Omit<DiaryEntry, "productName" | "weight" | "time">;
 
-export async function useDiaryForDay(date: string | Ref<string>) {
+export async function useDiaryForDay(
+  date: string | Ref<string>,
+  server = true
+) {
   const { data: diary, refresh } = await useAsyncData(
     "food-diary",
     async () => {
@@ -20,15 +23,15 @@ export async function useDiaryForDay(date: string | Ref<string>) {
       const result = await $fetch("/api/food-diary", {
         headers,
         params: { date: unref(date) },
-        onRequest({ request, options }) {
-          console.log("DOING REQUEST", unref(date));
-        },
+        //onRequest({ request, options }) {
+        //  console.log("DOING REQUEST", unref(date));
+        //},
       });
-      console.log("result is", result);
       return result;
     },
     {
       watch: isRef(date) ? [date] : undefined,
+      server,
     }
   );
 
@@ -39,7 +42,6 @@ export async function useDiaryForDay(date: string | Ref<string>) {
       console.log("DOING REQUEST", unref(date));
     },
   });*/
-  console.log("DONE REQUEST");
 
   const diaryByTime = computed(() => {
     if (!diary.value) return [];
