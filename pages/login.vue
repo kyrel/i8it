@@ -18,6 +18,9 @@ async function signIn() {
   isSigningIn.value = true;
   const { error } = await authClient.auth.signInWithOAuth({
     provider: "github",
+    options: {
+      redirectTo: `${window.location.protocol}//${window.location.host}/confirm`,
+    },
   });
   isSigningIn.value = false;
   if (error) {
