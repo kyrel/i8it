@@ -10,7 +10,7 @@
 </template>
 
 <script setup lang="ts">
-const authClient = useSupabaseAuthClient();
+const authClient = useSupabaseClient();
 const isSigningIn = ref(false);
 
 async function signIn() {
@@ -18,9 +18,6 @@ async function signIn() {
   isSigningIn.value = true;
   const { error } = await authClient.auth.signInWithOAuth({
     provider: "github",
-    options: {
-      redirectTo: "/",
-    },
   });
   isSigningIn.value = false;
   if (error) {

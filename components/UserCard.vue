@@ -5,7 +5,7 @@
   </div>
 </template>
 <script setup lang="ts">
-const authClient = useSupabaseAuthClient();
+const authClient = useSupabaseClient();
 const user = useSupabaseUser();
 
 async function signOut() {
