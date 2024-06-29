@@ -2,79 +2,31 @@
   <div class="login__container">
     <div class="login__card">
       <h1>login to i8it</h1>
-      <form @submit.prevent="signIn" v-if="!showOtpPrompt">
-        <label for="emailInput" class="login__label">Email:</label>
-        <input
-          ref="emailInput"
-          type="email"
-          class="login__input"
-          id="emailInput"
-          v-model="email"
-          :disabled="isSigningIn"
-        />
-        <br />
-        <button type="submit" :disabled="isSigningIn">Sign In</button>
-      </form>
-      <form @submit.prevent="verifyOtp" v-if="showOtpPrompt">
-        <label for="otpInput" class="login__label">Verification code:</label>
-        <input
-          ref="otpInput"
-          type="text"
-          class="login__input"
-          id="otpInput"
-          v-model="otp"
-          :disabled="isVerifying"
-        />
-        <br />
-        <button type="submit" :disabled="isVerifying">Verify</button>
-      </form>
+      <button type="submit" @click="signIn" :disabled="isSigningIn">
+        Sign In with GitHub
+      </button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-const emailInput = ref<null | HTMLInputElement>(null);
-const otpInput = ref<null | HTMLInputElement>(null);
 const authClient = useSupabaseAuthClient();
-const email = ref("");
-const otp = ref("");
-const showOtpPrompt = ref(false);
 const isSigningIn = ref(false);
-const isVerifying = ref(false);
 
 async function signIn() {
   if (isSigningIn.value) return;
   isSigningIn.value = true;
-  const { error } = await authClient.auth.signInWithOtp({
-    email: email.value,
+  const { error } = await authClient.auth.signInWithOAuth({
+    provider: "github",
+    options: {
+      redirectTo: "/",
+    },
   });
   isSigningIn.value = false;
   if (error) {
     return;
   }
-  showOtpPrompt.value = true;
-  await nextTick();
-  otpInput.value!.focus();
 }
-
-async function verifyOtp() {
-  if (isVerifying.value) return;
-  isVerifying.value = true;
-  const { error } = await authClient.auth.verifyOtp({
-    type: "email",
-    email: email.value,
-    token: otp.value,
-  });
-  isVerifying.value = false;
-  if (error) {
-    return;
-  }
-  navigateTo("/");
-}
-
-onMounted(() => {
-  emailInput.value!.focus();
-});
 </script>
 
 <style>
